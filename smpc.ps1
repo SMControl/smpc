@@ -108,7 +108,7 @@ $installChoice = Read-Host "Would you like the script to help install SmartOffic
 if ($installChoice -eq '0') { exit }
 if ($installChoice -match '^[Yy]$') {
     Write-Host "Running Smart Office installer..." -ForegroundColor White
-    Start-Process powershell -ArgumentList '-Command "irm https://raw.githubusercontent.com/SMControl/SO_UC/main/soua.ps1 | iex"' -Wait
+    Start-Process powershell -ArgumentList '-Command "irm https://raw.githubusercontent.com/SMControl/SO_Upgrade/refs/heads/main/main/soua.ps1 | iex"' -Wait
     Write-Host "Smart Office installation complete. Verifying installation..." -ForegroundColor White
     if (Test-Path $stationMasterPath) {
         Write-Host "SmartOffice is now installed successfully." -ForegroundColor Green
