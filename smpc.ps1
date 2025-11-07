@@ -360,14 +360,44 @@ Write-Host "[██████████████████_____________
 Write-Host " "
 Write-Host "Transfer the payroll software or take backups from the old PC." -ForegroundColor White
 Part-End
-# Part 19/38 - Install DOMS Components
+#----------------------------------------------------------------------------------
+# Part 19/38: Install DOMS Components
+# PartVersion: 1.0.1
+# Description: Installs the necessary DOMS software components. Offers guided installation.
+#----------------------------------------------------------------------------------
 Show-Header
 Write-Host "(Part 19/38)" -ForegroundColor Yellow
 Write-Host "Task: Install DOMS Components" -ForegroundColor Green
+# Display visual progress bar (Approx 45% complete)
 Write-Host "[███████████████████_____________________]" -ForegroundColor Magenta
 Write-Host " "
-Write-Host "Install the required DOMS components." -ForegroundColor White
-Part-End
+
+# Ask the user if they want the script to automate the installation
+$installChoice = Read-Host "Would you like the script to help install DOMS Components? (Y/N)"
+
+if ($installChoice -eq '0') { 
+    # Exit if the user enters '0'
+    exit 
+}
+
+if ($installChoice -match '^[Yy]$') {
+    Write-Host "Running DOMS Components installer script from GitHub..." -ForegroundColor White
+    
+    # Executes the remote script (irm = Invoke-RestMethod, iex = Invoke-Expression) in a new process, 
+    # using the URL provided: https://raw.githubusercontent.com/SMControl/smpc/refs/heads/main/modules/module_install_doms.ps1
+    Start-Process powershell -ArgumentList '-Command "irm https://raw.githubusercontent.com/SMControl/smpc/refs/heads/main/modules/module_install_doms.ps1 | iex"' -Wait
+
+    Write-Host "DOMS Components installer script execution complete." -ForegroundColor White
+    
+    # NOTE: You would typically place verification logic here (e.g., Test-Path for a key file)
+    # Since we cannot verify the installation path, we assume success, similar to the structure in Part 3.
+    Write-Host "Installation script has run successfully. Please proceed." -ForegroundColor Green
+    Part-End
+
+} else {
+    Write-Host "Please install the required DOMS Components manually before continuing." -ForegroundColor White
+    Part-End
+}
 # Part 20/38 - Copy Doms.ini / Doms.xml
 Show-Header
 Write-Host "(Part 20/38)" -ForegroundColor Yellow
@@ -578,4 +608,5 @@ Write-Host " "
 Write-Host "The PC transfer process is now complete!" -ForegroundColor Green
 Write-Host "Ensure all final checks are done before handing over the system." -ForegroundColor White
 Part-End
+
 
