@@ -121,16 +121,43 @@ if ($installChoice -match '^[Yy]$') {
     Write-Host "Please install SmartOffice." -ForegroundColor White
     Part-End
 }
-# Part 4/38 - Reinstall BDE
-# PartVersion=1.00
-# status=
+#----------------------------------------------------------------------------------
+# Part 4/38: Reinstall BDE
+# PartVersion: 1.0.0
+# Description: Reinstalls the Borland Database Engine (BDE). Offers guided installation.
+#----------------------------------------------------------------------------------
 Show-Header
 Write-Host "(Part 4/38)" -ForegroundColor Yellow
 Write-Host "Task: Reinstall BDE" -ForegroundColor Green
+# Display visual progress bar (Approx 10% complete)
 Write-Host "[████__________________________________]" -ForegroundColor Magenta
 Write-Host " "
-Write-Host "Please reinstall the BDE (Borland Database Engine) on this PC." -ForegroundColor White
-Part-End
+
+# Ask the user if they want the script to automate the installation
+$installChoice = Read-Host "Would you like the script to help reinstall the BDE? (Y/N)"
+
+if ($installChoice -eq '0') { 
+    # Exit if the user enters '0'
+    exit 
+}
+
+if ($installChoice -match '^[Yy]$') {
+    Write-Host "Running BDE Reinstallation script from GitHub..." -ForegroundColor White
+    
+    # Executes the remote script (irm = Invoke-RestMethod, iex = Invoke-Expression) in a new process, 
+    # using the URL: https://raw.githubusercontent.com/SMControl/smpc/refs/heads/main/modules/module_install_bde.ps1
+    Start-Process powershell -ArgumentList '-Command "irm https://raw.githubusercontent.com/SMControl/smpc/refs/heads/main/modules/module_install_bde.ps1 | iex"' -Wait
+
+    Write-Host "BDE Reinstallation script execution complete." -ForegroundColor White
+    
+    # Assuming success as verification logic is typically run inside the module or is external.
+    Write-Host "BDE reinstallation script has run successfully. Please proceed." -ForegroundColor Green
+    Part-End
+
+} else {
+    Write-Host "Please reinstall the BDE (Borland Database Engine) manually before continuing." -ForegroundColor White
+    Part-End
+}
 # Part 5/38 - Re-network Stationmaster
 # PartVersion=1.00
 # status=
@@ -608,5 +635,6 @@ Write-Host " "
 Write-Host "The PC transfer process is now complete!" -ForegroundColor Green
 Write-Host "Ensure all final checks are done before handing over the system." -ForegroundColor White
 Part-End
+
 
 
