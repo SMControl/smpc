@@ -1,5 +1,5 @@
 # Script Name: smpct.ps1
-# Script Version: 1.04
+# Script Version: 1.05
 # Last Updated: 2025-11-09
 
 # ------------------------------------
@@ -12,6 +12,9 @@ $FirebirdInstallerUrl = "https://raw.githubusercontent.com/SMControl/SO_Upgrade/
 # Smart Office Installer Script (Part 3)
 $SmartOfficeInstallerUrl = "https://raw.githubusercontent.com/SMControl/SO_UC/main/soua.ps1"
 
+# BDE Installer Script (Part 4)
+$BDEInstallerUrl = "https://raw.githubusercontent.com/SMControl/smpc/refs/heads/main/modules/module_install_bde.ps1"
+
 # PDT Wi-Fi Task Scheduler Setup Script (Part 8)
 $PDTWifiTaskUrl = "https://raw.githubusercontent.com/SMControl/SM_PDTWiFi_Task/main/SMPT_Online.ps1"
 
@@ -23,7 +26,7 @@ $DomsInstallerUrl = "https://raw.githubusercontent.com/SMControl/smpc/refs/heads
 
 function Show-Header {
     Clear-Host
-    Write-Host "SM PC Transfer Guide - Version 1.04 (Scripting Assistant)" -ForegroundColor Yellow
+    Write-Host "SM PC Transfer Guide - Version 1.05 (Scripting Assistant)" -ForegroundColor Yellow
     Write-Host "--------------------------------------------------------" -ForegroundColor Yellow
     Write-Host " "
 }
@@ -139,18 +142,36 @@ if ($installChoice -match '^[Yy]$') {
 Part-End
 
 # Part 4/38 - Reinstall BDE
-# Part Version: 1.00
+# Part Version: 1.01 (Updated to include automated installer option)
 $partNumber = 4
-$partVersion = "1.00"
+$partVersion = "1.01"
 Show-Header
 Write-Host "(Part $partNumber/38 | V$partVersion)"
 Write-Host (Get-ProgressBar -PartNumber $partNumber)
 Write-Host " "
 Write-Host "Task: Reinstall BDE"
 Write-Host "We need to reinstall the BDE (Borland Database Engine) on this PC." -ForegroundColor Yellow
-$input = Read-Host "Press Enter once BDE is installed or 0 to exit..."
-if ($input -eq '0') { exit }
-Part-End
+
+$installChoice = Read-Host "Would you like the script to help reinstall the BDE? (Y/N)"
+
+if ($installChoice -eq '0') { 
+    exit 
+}
+
+if ($installChoice -match '^[Yy]$') {
+    Write-Host "Running BDE Reinstallation script from: $BDEInstallerUrl" -ForegroundColor White
+    
+    # Executes the remote script
+    Start-Process powershell -ArgumentList "-Command `"irm $BDEInstallerUrl | iex`"" -Wait
+
+    Write-Host "BDE Reinstallation script execution complete." -ForegroundColor Green
+    Write-Success "BDE reinstallation script has run successfully. Please proceed."
+    Part-End
+
+} else {
+    Write-Host "Please reinstall the BDE (Borland Database Engine) manually and press Enter to continue." -ForegroundColor Yellow
+    Part-End
+}
 
 # Part 5/38 - Re-network Stationmaster
 # Part Version: 1.01
@@ -428,7 +449,7 @@ if ($installChoice -eq '0') {
 if ($installChoice -match '^[Yy]$') {
     Write-Host "Running DOMS Components installer script from: $DomsInstallerUrl" -ForegroundColor White
     
-    # Executes the remote script (irm = Invoke-RestMethod, iex = Invoke-Expression) in a new process.
+    # Executes the remote script
     Start-Process powershell -ArgumentList "-Command `"irm $DomsInstallerUrl | iex`"" -Wait
 
     Write-Host "DOMS Components installer script execution complete." -ForegroundColor Green
